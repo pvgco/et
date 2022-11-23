@@ -1,0 +1,125 @@
+Name: Soham Siddharam Kulkarni
+TE IT
+Roll number: 42
+Advanced database management system
+Map-Reduce Assignment
+
+Assignment No:-2(B)
+Assignment Submission Date:
+Subject: Laborotory Practice -I
+Student Name:-
+Problem Statement :
+In this example we shall take school db in which students is a collection
+and the collection has documents where each document has name of the
+student, marks he/she scored in a particular subject.
+We shall apply mapReduce function
+1) to fnd average marks for each student.
+2) To fnd total marks for each students
+
+-Collection Creation
+> db.createCollection("map_reduce")
+{ "ok" : 1 }
+
+-Value Insertion
+> db.map_reduce.insert([{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec39"), "name" : "Midhu", "subject" :
+... "science", "marks" : 68 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec3a"), "name" : "Midhu", "subject" :
+... "maths", "marks" : 98 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec3b"), "name" : "Midhu", "subject" :
+... "sports", "marks" : 77 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec3c"), "name" : "Akhil", "subject" :
+... "science", "marks" : 67 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec3d"), "name" : "Akhil", "subject" :
+... "maths", "marks" : 87 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec3e"), "name" : "Akhil", "subject" :
+... "sports", "marks" : 89 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec3f"), "name" : "Anish", "subject" :
+... "science", "marks" : 67 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec40"), "name" : "Anish", "subject" :
+... "maths", "marks" : 78 },
+... { "_id" : ObjectId("5a1f9ce431c157f3ec2aec41"), "name" : "Anish", "subject" :
+... "sports", "marks" : 90 }])
+BulkWriteResult({
+	"writeErrors" : [ ],
+	"writeConcernErrors" : [ ],
+	"nInserted" : 9,
+	"nUpserted" : 0,
+	"nMatched" : 0,
+	"nModified" : 0,
+	"nRemoved" : 0,
+	"upserted" : [ ]
+})
+
+-find()
+> db.map_reduce.find()
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec39"), "name" : "Midhu", "subject" : "science", "marks" : 68 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec3a"), "name" : "Midhu", "subject" : "maths", "marks" : 98 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec3b"), "name" : "Midhu", "subject" : "sports", "marks" : 77 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec3c"), "name" : "Akhil", "subject" : "science", "marks" : 67 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec3d"), "name" : "Akhil", "subject" : "maths", "marks" : 87 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec3e"), "name" : "Akhil", "subject" : "sports", "marks" : 89 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec3f"), "name" : "Anish", "subject" : "science", "marks" : 67 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec40"), "name" : "Anish", "subject" : "maths", "marks" : 78 }
+{ "_id" : ObjectId("5a1f9ce431c157f3ec2aec41"), "name" : "Anish", "subject" : "sports", "marks" : 90 }
+
+1) to fnd average marks for each student.
+-Map Function
+> var map=function(){emit(this.name,this.marks);};
+
+-Reducer Function
+> var reduce=function(name,marks){return Array.sum(marks);};
+
+-Map-Reduce
+> db.map_reduce.mapReduce(map,reduce,{out:"total"});
+{
+	"result" : "total",
+	"timeMillis" : 573,
+	"counts" : {
+		"input" : 9,
+		"emit" : 9,
+		"reduce" : 3,
+		"output" : 3
+	},
+	"ok" : 1
+}
+
+-Sum of each Student
+> db.total.find()
+{ "_id" : "Akhil", "value" : 243 }
+{ "_id" : "Anish", "value" : 235 }
+{ "_id" : "Midhu", "value" : 243 }
+----------------------------------------------------------------------------
+2) To fnd total marks for each students
+-Map function
+> var map=function(){emit(this.name,this.marks);};
+
+-Reduce function
+> var reduce=function(name,marks){return Array.avg(marks);};
+
+-Map reduce
+> db.map_reduce.mapReduce(map,reduce,{out:"Average"});
+{
+	"result" : "Average",
+	"timeMillis" : 419,
+	"counts" : {
+		"input" : 9,
+		"emit" : 9,
+		"reduce" : 3,
+		"output" : 3
+	},
+	"ok" : 1
+}
+
+
+-Average of each Student
+> db.Average.find()
+{ "_id" : "Akhil", "value" : 81 }
+{ "_id" : "Anish", "value" : 78.33333333333333 }
+{ "_id" : "Midhu", "value" : 81 }
+
+----------------------------------------------------------------------------
+
+
+
+
+
